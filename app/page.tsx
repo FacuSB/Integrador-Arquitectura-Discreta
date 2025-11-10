@@ -80,19 +80,21 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background text-foreground">
-      <div className="flex h-screen">
-        <ComponentPalette
-          onAddComponent={addNode}
-          fromNode={fromNode}
-          toNode={toNode}
-          onFromNodeChange={setFromNode}
-          onToNodeChange={setToNode}
-          onSearch={handleSearch}
-          nodes={nodes.map(({ id, label }) => ({ id, label }))}
-        />
-        <div className="flex-1 flex flex-col">
-          <div className="bg-card border-b border-border p-4 flex justify-between items-center">
-            <div>
+      <div className="flex flex-col md:flex-row h-screen">
+        <div className="w-full md:w-48 flex-shrink-0">
+          <ComponentPalette
+            onAddComponent={addNode}
+            fromNode={fromNode}
+            toNode={toNode}
+            onFromNodeChange={setFromNode}
+            onToNodeChange={setToNode}
+            onSearch={handleSearch}
+            nodes={nodes.map(({ id, label }) => ({ id, label }))}
+          />
+        </div>
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="bg-card border-b border-border p-4 flex flex-col md:flex-row justify-between items-center gap-2">
+            <div className="text-center md:text-left">
               <h1 className="text-2xl font-bold">Constructor de Diagramas de Red</h1>
               <p className="text-sm text-muted-foreground">
                 Arrastrá componentes al lienzo y hacé click en los puertos para conectar
@@ -113,7 +115,7 @@ export default function Home() {
               </button>
             </div>
           </div>
-          <div className="flex-1 relative overflow-hidden bg-muted/10">
+          <div className="flex-1 relative overflow-auto bg-muted/10 min-h-0">
             <NetworkCanvas
               nodes={nodes}
               connections={connections}

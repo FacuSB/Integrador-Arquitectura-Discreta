@@ -28,7 +28,7 @@ export function ComponentPalette({
   nodes,
 }: ComponentPaletteProps) {
   return (
-    <div className="w-48 bg-card border-r border-border p-4 overflow-y-auto flex flex-col">
+    <div className="w-full md:w-48 bg-card border-r border-border p-4 overflow-y-auto flex flex-col">
       <div>
   <h2 className="text-lg font-semibold mb-4">Componentes</h2>
         <div className="space-y-2 mb-6">
