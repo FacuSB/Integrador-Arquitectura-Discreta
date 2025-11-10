@@ -5,6 +5,7 @@ import { NetworkCanvas } from "@/components/network-canvas"
 import { ComponentPalette } from "@/components/component-palette"
 import { DataExporter } from "@/components/data-exporter"
 import { GraphVisualization } from "@/components/graph-visualization"
+import { dijkstra } from "@/lib/utils"
 import type { NetworkNode, NetworkConnection } from "@/types/network"
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
   const [fromNode, setFromNode] = useState("")
   const [toNode, setToNode] = useState("")
   const [showGraph, setShowGraph] = useState(false)
+  const [shortestPath, setShortestPath] = useState<string[]>([])
 
   const addNode = (type: string) => {
     const newNode: NetworkNode = {
@@ -69,7 +71,10 @@ export default function Home() {
   }
 
   const handleSearch = () => {
-    console.log("[v0] Path search from:", fromNode, "to:", toNode, "Nodes:", nodes, "Connections:", connections)
+    if (!fromNode || !toNode) return
+    const result = dijkstra(nodes, connections, fromNode, toNode)
+    setShortestPath(result.path)
+    setShowGraph(true)
   }
 
   return (
@@ -82,13 +87,14 @@ export default function Home() {
           onFromNodeChange={setFromNode}
           onToNodeChange={setToNode}
           onSearch={handleSearch}
+          nodes={nodes.map(({ id, label }) => ({ id, label }))}
         />
         <div className="flex-1 flex flex-col">
           <div className="bg-card border-b border-border p-4 flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold">Network Diagram Builder</h1>
+              <h1 className="text-2xl font-bold">Constructor de Diagramas de Red</h1>
               <p className="text-sm text-muted-foreground">
-                Arrastra componentes al lienzo, haz click en los puertos para conectar
+                Arrastrá componentes al lienzo y hacé click en los puertos para conectar
               </p>
             </div>
             <button
@@ -118,6 +124,7 @@ export default function Home() {
         connections={connections}
         isOpen={showGraph}
         onClose={() => setShowGraph(false)}
+        path={shortestPath}
       />
     </main>
   )

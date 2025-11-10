@@ -6,7 +6,6 @@ const COMPONENT_TYPES = [
   { id: "pc", label: "PC", icon: "💻", color: "bg-blue-500" },
   { id: "database", label: "Base de Datos", icon: "🗄️", color: "bg-green-500" },
   { id: "router", label: "Router", icon: "🔄", color: "bg-red-500" },
-  { id: "firewall", label: "Firewall", icon: "🛡️", color: "bg-cyan-500" },
 ]
 
 interface ComponentPaletteProps {
@@ -16,6 +15,7 @@ interface ComponentPaletteProps {
   onFromNodeChange: (value: string) => void
   onToNodeChange: (value: string) => void
   onSearch: () => void
+  nodes: { id: string; label: string }[]
 }
 
 export function ComponentPalette({
@@ -25,11 +25,12 @@ export function ComponentPalette({
   onFromNodeChange,
   onToNodeChange,
   onSearch,
+  nodes,
 }: ComponentPaletteProps) {
   return (
     <div className="w-48 bg-card border-r border-border p-4 overflow-y-auto flex flex-col">
       <div>
-        <h2 className="text-lg font-semibold mb-4">Componentes</h2>
+  <h2 className="text-lg font-semibold mb-4">Componentes</h2>
         <div className="space-y-2 mb-6">
           {COMPONENT_TYPES.map((type) => (
             <Button
@@ -46,27 +47,37 @@ export function ComponentPalette({
       </div>
 
       <div className="border-t border-border pt-4 mt-auto">
-        <h3 className="text-sm font-semibold mb-3">Camino más corto</h3>
+  <h3 className="text-sm font-semibold mb-3">Camino más corto</h3>
         <div className="space-y-2">
           <div>
             <label className="text-xs text-muted-foreground block mb-1">Desde</label>
-            <input
-              type="text"
+            <select
               value={fromNode}
               onChange={(e) => onFromNodeChange(e.target.value)}
-              placeholder="ej: pc-123"
               className="w-full px-2 py-1 bg-background border border-border rounded text-xs focus:outline-none focus:ring-2 focus:ring-primary"
-            />
+            >
+              <option value="">Seleccionar nodo</option>
+              {nodes.map((node) => (
+                <option key={node.id} value={node.id}>
+                  {node.label} ({node.id})
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="text-xs text-muted-foreground block mb-1">Hasta</label>
-            <input
-              type="text"
+            <select
               value={toNode}
               onChange={(e) => onToNodeChange(e.target.value)}
-              placeholder="ej: database-456"
               className="w-full px-2 py-1 bg-background border border-border rounded text-xs focus:outline-none focus:ring-2 focus:ring-primary"
-            />
+            >
+              <option value="">Seleccionar nodo</option>
+              {nodes.map((node) => (
+                <option key={node.id} value={node.id}>
+                  {node.label} ({node.id})
+                </option>
+              ))}
+            </select>
           </div>
           <Button onClick={onSearch} className="w-full text-xs">
             Buscar
