@@ -50,6 +50,7 @@ Esta aplicación permite crear, visualizar y analizar grafos de manera intuitiva
 - Medina Gabriel
 - Vanni Giovani
 - Mateo Difiore
+- Jara Fabricio 
 
 Facultad Cuenca del Plata
 
