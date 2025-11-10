@@ -15,6 +15,7 @@ export default function Home() {
   const [toNode, setToNode] = useState("")
   const [showGraph, setShowGraph] = useState(false)
   const [shortestPath, setShortestPath] = useState<string[]>([])
+  const [showCredits, setShowCredits] = useState(false)
 
   const addNode = (type: string) => {
     const newNode: NetworkNode = {
@@ -97,12 +98,20 @@ export default function Home() {
                 Arrastrá componentes al lienzo y hacé click en los puertos para conectar
               </p>
             </div>
-            <button
-              onClick={() => setShowGraph(true)}
-              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
-            >
-              Ver Grafo
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowGraph(true)}
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+              >
+                Ver Grafo
+              </button>
+              <button
+                onClick={() => setShowCredits(true)}
+                className="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/90 transition-colors font-medium border border-border"
+              >
+                Créditos
+              </button>
+            </div>
           </div>
           <div className="flex-1 relative overflow-hidden bg-muted/10">
             <NetworkCanvas
@@ -126,6 +135,30 @@ export default function Home() {
         onClose={() => setShowGraph(false)}
         path={shortestPath}
       />
+
+      {/* Modal de Créditos */}
+      {showCredits && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-card rounded-lg shadow-xl p-8 max-w-md w-full relative">
+            <button
+              onClick={() => setShowCredits(false)}
+              className="absolute top-2 right-2 p-2 hover:bg-muted rounded-full transition-colors"
+              aria-label="Cerrar"
+            >
+              ×
+            </button>
+            <h2 className="text-xl font-bold mb-4 text-center">Alumnos</h2>
+            <ul className="mb-4 text-center">
+              <li>Mariano Cordeiro</li>
+              <li>Blanco Facundo</li>
+              <li>Medina Gabriel</li>
+              <li>Vanni Giovani</li>
+              <li>Mateo Difiore</li>
+            </ul>
+            <div className="text-center text-sm text-muted-foreground">Facultad Cuenca del Plata</div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
