@@ -43,7 +43,35 @@ Esta aplicación permite crear, visualizar y analizar grafos de manera intuitiva
 	```
 4. Abrí [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-## Créditos
+
+
+<details>
+<summary><strong>Proceso de desarrollo (mostrar/ocultar)</strong></summary>
+
+El desarrollo de la página se realizó utilizando Next.js y React, priorizando la experiencia visual y la facilidad de uso. Así fue el proceso y las decisiones técnicas principales:
+
+1. **Diseño y estructura**  
+	- Se definió un layout responsive usando Tailwind CSS, para que la app funcione bien tanto en escritorio como en mobile.
+	- El panel de componentes y el área de trabajo se organizaron con Flexbox, permitiendo que se adapten según el tamaño de pantalla.
+
+2. **Lógica de nodos y conexiones**  
+	- Se crearon componentes reutilizables para los nodos y las conexiones.
+	- El estado de los nodos y conexiones se maneja con React (`useState`), permitiendo agregar, mover, renombrar y eliminar nodos de forma dinámica.
+
+3. **Visualización de grafos**  
+	- Se integró Cytoscape.js para renderizar el grafo y animar el camino más corto.
+	- Se implementó el algoritmo de Dijkstra en TypeScript para calcular el camino óptimo entre dos nodos seleccionados.
+
+4. **Interactividad**  
+	- Los selectores de nodos permiten elegir fácilmente el origen y destino para el cálculo del camino más corto.
+	- Los botones y modales (como el de créditos) se diseñaron para ser intuitivos y accesibles.
+
+5. **Exportación y modularidad**  
+	- Se agregó una función para exportar los datos del grafo, facilitando su uso en otros contextos.
+	- El código se organizó en componentes y hooks para mantenerlo limpio y fácil de mantener.
+
+</details>
+
 
 - Mariano Cordeiro
 - Blanco Facundo
@@ -52,7 +80,7 @@ Esta aplicación permite crear, visualizar y analizar grafos de manera intuitiva
 - Mateo Difiore
 - Jara Fabricio 
 
-Facultad Cuenca del Plata
+Universidad de la Cuenca del Plata
 
 ---
 

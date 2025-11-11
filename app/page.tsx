@@ -158,7 +158,7 @@ export default function Home() {
               <li>Mateo Difiore</li>
               <li>Jara Fabricio</li>
             </ul>
-            <div className="text-center text-sm text-muted-foreground">Facultad Cuenca del Plata</div>
+            <div className="text-center text-sm text-muted-foreground">Universidad de la Cuenca del Plata</div>
           </div>
         </div>
       )}
