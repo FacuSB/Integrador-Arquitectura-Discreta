@@ -29,11 +29,13 @@ export function dijkstra(
     if (current === endId) break
     unvisited.delete(current)
 
-    // Buscar vecinos
-    const neighbors = connections.filter((c) => c.from === current).map((c) => c.to)
-    for (const neighbor of neighbors) {
+    // Buscar vecinos y considerar el peso
+    const outgoing = connections.filter((c) => c.from === current)
+    for (const conn of outgoing) {
+      const neighbor = conn.to
       if (!unvisited.has(neighbor)) continue
-      const alt = distances[current] + 1 // Peso 1 por defecto
+      const weight = typeof conn.weight === "number" && conn.weight > 0 ? conn.weight : 1
+      const alt = distances[current] + weight
       if (alt < distances[neighbor]) {
         distances[neighbor] = alt
         prev[neighbor] = current

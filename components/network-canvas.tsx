@@ -17,6 +17,7 @@ interface NetworkCanvasProps {
   onRemoveConnection: (from: string, to: string) => void
   onRenameNode: (id: string, newLabel: string) => void
   onClearAll: () => void
+  onUpdateConnectionWeight: (from: string, to: string, weight: number) => void
 }
 
 export function NetworkCanvas({
@@ -28,6 +29,7 @@ export function NetworkCanvas({
   onRemoveConnection,
   onRenameNode,
   onClearAll,
+  onUpdateConnectionWeight,
 }: NetworkCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [draggedNode, setDraggedNode] = useState<string | null>(null)
@@ -36,6 +38,13 @@ export function NetworkCanvas({
     port: "top" | "bottom" | "left" | "right"
   } | null>(null)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const [editingEdge, setEditingEdge] = useState<{
+    from: string
+    to: string
+    x: number
+    y: number
+    weight: number
+  } | null>(null)
 
   const GRID_SIZE = 20
 
@@ -90,15 +99,25 @@ export function NetworkCanvas({
     connections.forEach((conn) => {
       const fromNode = nodes.find((n) => n.id === conn.from)
       const toNode = nodes.find((n) => n.id === conn.to)
-
       if (fromNode && toNode) {
         const fromPos = getPortPosition(fromNode.x, fromNode.y, conn.fromPort)
         const toPos = getPortPosition(toNode.x, toNode.y, conn.toPort)
-
         ctx.beginPath()
         ctx.moveTo(fromPos.x, fromPos.y)
         ctx.lineTo(toPos.x, toPos.y)
         ctx.stroke()
+        // Dibujar el peso en el medio de la arista
+        if (typeof conn.weight === "number") {
+          const midX = (fromPos.x + toPos.x) / 2
+          const midY = (fromPos.y + toPos.y) / 2
+          ctx.save()
+          ctx.font = "bold 14px sans-serif"
+          ctx.fillStyle = "#0f172a"
+          ctx.textAlign = "center"
+          ctx.textBaseline = "middle"
+          ctx.fillText(String(conn.weight), midX, midY - 10)
+          ctx.restore()
+        }
       }
     })
 
@@ -157,7 +176,8 @@ export function NetworkCanvas({
   }
 
   const handleCanvasClick = () => {
-    setConnecting(null)
+  setConnecting(null)
+  setEditingEdge(null)
   }
 
   return (
@@ -171,7 +191,80 @@ export function NetworkCanvas({
         onClick={handleCanvasClick}
         onContextMenu={(e) => e.preventDefault()}
         className="absolute inset-0"
+        onDoubleClick={(e) => {
+          const canvas = canvasRef.current
+          if (!canvas) return
+          const rect = canvas.getBoundingClientRect()
+          const x = e.clientX - rect.left
+          const y = e.clientY - rect.top
+          // Detectar si se hizo doble click cerca de una arista
+          let found = null
+          connections.forEach((conn) => {
+            const fromNode = nodes.find((n) => n.id === conn.from)
+            const toNode = nodes.find((n) => n.id === conn.to)
+            if (fromNode && toNode) {
+              const fromPos = getPortPosition(fromNode.x, fromNode.y, conn.fromPort)
+              const toPos = getPortPosition(toNode.x, toNode.y, conn.toPort)
+              // Calcular distancia punto a segmento
+              const dx = toPos.x - fromPos.x
+              const dy = toPos.y - fromPos.y
+              const length = Math.sqrt(dx * dx + dy * dy)
+              const t = ((x - fromPos.x) * dx + (y - fromPos.y) * dy) / (length * length)
+              const nearestX = fromPos.x + t * dx
+              const nearestY = fromPos.y + t * dy
+              const dist = Math.sqrt((x - nearestX) ** 2 + (y - nearestY) ** 2)
+              if (dist < 20 && t >= 0 && t <= 1) {
+                found = { from: conn.from, to: conn.to, x: nearestX, y: nearestY, weight: conn.weight }
+              }
+            }
+          })
+          if (found) {
+            setEditingEdge(found)
+          }
+        }}
       />
+      {editingEdge && (
+        <div
+          style={{
+            position: "absolute",
+            left: editingEdge.x - 40,
+            top: editingEdge.y - 10,
+            zIndex: 20,
+            background: "#fff",
+            border: "1px solid #ccc",
+            borderRadius: 6,
+            padding: "4px 8px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+          }}
+        >
+          <input
+            type="number"
+            min={1}
+            value={editingEdge.weight}
+            style={{ width: 50, marginRight: 4 }}
+            onChange={e => {
+              const val = Number(e.target.value)
+              setEditingEdge({ ...editingEdge, weight: val })
+            }}
+          />
+          <button
+            style={{ padding: "2px 8px", borderRadius: 4, background: "#06b6d4", color: "#fff", border: "none" }}
+            onClick={() => {
+              if (editingEdge.weight > 0) {
+                onUpdateConnectionWeight(editingEdge.from, editingEdge.to, editingEdge.weight)
+                setEditingEdge(null)
+              }
+            }}
+          >Guardar</button>
+          <button
+            style={{ padding: "2px 8px", borderRadius: 4, background: "#eee", color: "#333", border: "none" }}
+            onClick={() => setEditingEdge(null)}
+          >Cancelar</button>
+        </div>
+      )}
       <button
         onClick={onClearAll}
         className="absolute top-4 right-4 p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors z-10 flex items-center gap-2"

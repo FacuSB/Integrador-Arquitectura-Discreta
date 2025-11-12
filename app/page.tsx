@@ -53,9 +53,16 @@ export default function Home() {
           fromPort: fromPort as "top" | "bottom" | "left" | "right",
           to,
           toPort: toPort as "top" | "bottom" | "left" | "right",
+          weight: 1,
         },
       ])
     }
+  }
+
+  const updateConnectionWeight = (from: string, to: string, weight: number) => {
+    setConnections(connections => connections.map(conn =>
+      conn.from === from && conn.to === to ? { ...conn, weight } : conn
+    ))
   }
 
   const removeConnection = (from: string, to: string) => {
@@ -125,6 +132,7 @@ export default function Home() {
               onRemoveConnection={removeConnection}
               onRenameNode={renameNode}
               onClearAll={clearAll}
+              onUpdateConnectionWeight={updateConnectionWeight}
             />
           </div>
           <DataExporter nodes={nodes} connections={connections} />

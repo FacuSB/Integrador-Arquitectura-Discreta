@@ -11,6 +11,7 @@ export interface NetworkConnection {
   fromPort: "top" | "bottom" | "left" | "right" // Added port information
   to: string
   toPort: "top" | "bottom" | "left" | "right"
+  weight: number // Peso o distancia de la arista
 }
 
 export function getPortPosition(nodeX: number, nodeY: number, port: "top" | "bottom" | "left" | "right") {

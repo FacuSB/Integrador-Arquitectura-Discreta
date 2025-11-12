@@ -16,6 +16,7 @@ export function GraphVisualization({ nodes, connections, isOpen, onClose, path }
   const containerRef = useRef<HTMLDivElement>(null)
   const [cy, setCy] = useState<any>(null)
 
+  // Inicialización de Cytoscape
   useEffect(() => {
     if (!isOpen || !containerRef.current) return
 
@@ -44,6 +45,13 @@ export function GraphVisualization({ nodes, connections, isOpen, onClose, path }
               "line-color": "#06b6d4",
               "target-arrow-color": "#06b6d4",
               width: 2,
+              label: "data(label)",
+              "font-size": 14,
+              "text-background-color": "#fff",
+              "text-background-opacity": "0.8",
+              "text-background-padding": "2",
+              "text-margin-y": -10,
+              color: "#0f172a",
             },
           },
           {
@@ -71,11 +79,16 @@ export function GraphVisualization({ nodes, connections, isOpen, onClose, path }
       })
       connections.forEach((conn) => {
         cy.add({
-          data: { id: `${conn.from}-${conn.to}`, source: conn.from, target: conn.to },
+          data: {
+            id: `${conn.from}-${conn.to}`,
+            source: conn.from,
+            target: conn.to,
+            label: conn.weight !== undefined ? String(conn.weight) : ""
+          },
         })
       })
 
-  cy.layout({ name: "cose", animate: true }).run()
+      cy.layout({ name: "cose", animate: true }).run()
       setCy(cy)
 
       return () => {
